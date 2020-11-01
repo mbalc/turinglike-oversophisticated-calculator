@@ -1,7 +1,27 @@
-pub type Number = i32;
+use derive_more::{Add, FromStr};
 
-pub type State = String;
-pub type TapeEntry = Number;
+#[derive(Debug, Hash, PartialOrd, FromStr, PartialEq, Eq, Add)]
+pub struct Number(pub i32);
+
+#[derive(Debug, Hash, PartialEq, Eq)]
+pub struct State(pub String);
+impl State {
+    pub fn value<'a>(&'a self) -> &'a str {
+        &self.0
+    }
+}
+
+pub mod StdStates {
+    pub const start: &str = "start";
+    pub const accept: &str = "accept";
+    pub const reject: &str = "reject";
+}
+
+#[derive(Debug, Hash, PartialOrd, FromStr, PartialEq, Eq, Add)]
+pub struct TapeEntry(pub i32);
+impl TapeEntry {
+    pub const blank: TapeEntry = TapeEntry(0);
+}
 
 #[derive(Debug)]
 pub enum TapeHeadMove {

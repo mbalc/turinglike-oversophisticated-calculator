@@ -23,20 +23,20 @@ impl Transition {
         let (state1, val1, state2, val2, dir) = scan_fmt!(
             description,
             "{} {} {} {} {}",
-            State,
-            TapeEntry,
-            State,
-            TapeEntry,
+            String,
+            i32,
+            String,
+            i32,
             char
         )?;
 
         let head_move_direction = tape_head_move_from_char(dir)?;
 
         Ok(Transition {
-            from_state: state1,
-            to_state: state2,
-            from_tape_value: val1,
-            to_tape_value: val2,
+            from_state: State(state1),
+            to_state: State(state2),
+            from_tape_value: TapeEntry(val1),
+            to_tape_value: TapeEntry(val2),
             tape_head_move: head_move_direction,
         })
     }
