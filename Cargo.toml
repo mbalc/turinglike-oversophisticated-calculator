@@ -12,3 +12,4 @@ path = "src/interpreter.rs"
 clippy = { version = "*", optional = true }
 
 [dependencies]
+scan_fmt = "0.2.5"

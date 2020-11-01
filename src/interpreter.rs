@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate scan_fmt;
+
 mod machine;
 mod types;
 
@@ -28,17 +31,20 @@ fn parse_cmd_arguments() -> Arguments {
         std::process::exit(1);
     }
 
-    return Arguments {
+    Arguments {
         input_file: cmd_args[1].clone(),
         execution_limit: cmd_args[2].parse::<Number>().unwrap_or_default(),
-    };
+    }
 }
 
-fn main() {
+fn main() -> Result<(), AppError> {
     let args = parse_cmd_arguments();
     let stdin = "alamakota".to_string();
 
-    let machine = ClassicMachine::from_file(stdin, args.input_file);
+    let machine = ClassicMachine::from_file(stdin, args.input_file)?;
+    dbg!(&machine);
 
     machine.run_with_limit(args.execution_limit);
+
+    Ok(())
 }
