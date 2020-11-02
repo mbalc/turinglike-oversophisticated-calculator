@@ -11,17 +11,40 @@ struct Run {
     current_configs: HashSet<Config>,
 }
 impl Run {
-    fn is_accepting_run_reached(self) -> bool {
+    pub fn apply_transitions(mut self, transitions: &Vec<Transition>) -> Run {
+        let mut new_configs = HashSet::new();
+        for trans in transitions.iter() {
+            for cfg in self.current_configs.iter() {
+                if trans.applicable_to(cfg) {
+                    new_configs.insert(cfg.apply(trans));
+                }
+            }
+        } // TODO drop new_configs that have already been visited earlier
+
+        self.visited_configs.extend(new_configs.iter().cloned());
+        Run {
+            visited_configs: self.visited_configs,
+            current_configs: new_configs,
+            current_step_no: self.current_step_no + 1,
+        }
+    }
+    pub fn is_accepting_run_reached(&self) -> bool {
         self.visited_configs
             .iter()
             .find(|cfg| cfg.state.value() == StdStates::accept)
             .is_some()
     }
 }
-#[derive(Debug, Hash, PartialEq, Eq)]
-struct Config {
-    tape: Tape,
-    state: State,
+#[derive(Debug, Hash, PartialEq, Eq, Clone)]
+pub struct Config {
+    pub tape: Tape,
+    pub state: State,
+}
+impl Config {
+    pub fn apply(&self, trans: &Transition) -> Config {
+        // TODO
+        self.clone()
+    }
 }
 
 #[derive(Debug)]
@@ -37,18 +60,16 @@ impl ClassicMachine {
         execution_limit: Number,
         input_word: String,
     ) -> AppResult<ClassicMachine> {
-        let initial_config = Config {
+        let mut step_configs = HashSet::new();
+        step_configs.insert(Config {
             tape: Tape::new(input_word),
             state: State(StdStates::start.to_string()),
-        };
-
-        let mut step_configs = HashSet::new();
-        step_configs.insert(initial_config);
+        });
 
         let initial_run_data = Run {
-            visited_configs: HashSet::new(),
+            visited_configs: step_configs.clone(),
             current_configs: step_configs,
-            current_step_no: Number(0),
+            current_step_no: 0,
         };
 
         Ok(ClassicMachine {
@@ -58,9 +79,18 @@ impl ClassicMachine {
         })
     }
 
-    fn time_limit_reached(self) -> bool {
+    fn time_limit_reached(&self) -> bool {
         self.run.current_step_no >= self.execution_limit
     }
 
-    pub fn run_with_limit(self) -> () {}
+    pub fn run_with_limit(mut self) -> () {
+        while !self.time_limit_reached() && !self.run.is_accepting_run_reached() {
+            self.run = self.run.apply_transitions(&self.transitions);
+        }
+        if self.run.is_accepting_run_reached() {
+            println!("OK")
+        } else {
+            println!("FAIL")
+        }
+    }
 }

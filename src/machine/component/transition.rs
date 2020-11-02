@@ -1,3 +1,4 @@
+use crate::machine::classic::Config;
 use crate::types::*;
 
 #[derive(Debug)]
@@ -24,9 +25,9 @@ impl Transition {
             description,
             "{} {} {} {} {}",
             String,
-            i32,
+            Number,
             String,
-            i32,
+            Number,
             char
         )?;
 
@@ -39,5 +40,9 @@ impl Transition {
             to_tape_value: TapeEntry(val2),
             tape_head_move: head_move_direction,
         })
+    }
+
+    pub fn applicable_to(&self, cfg: &Config) -> bool {
+        self.from_state == cfg.state // TODO also compare tape head values
     }
 }

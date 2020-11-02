@@ -1,9 +1,8 @@
 use derive_more::{Add, FromStr};
 
-#[derive(Debug, Hash, PartialOrd, FromStr, PartialEq, Eq, Add)]
-pub struct Number(pub i32);
+pub type Number = i32;
 
-#[derive(Debug, Hash, PartialEq, Eq)]
+#[derive(Debug, Hash, PartialEq, Eq, Clone)]
 pub struct State(pub String);
 impl State {
     pub fn value<'a>(&'a self) -> &'a str {
@@ -17,8 +16,8 @@ pub mod StdStates {
     pub const reject: &str = "reject";
 }
 
-#[derive(Debug, Hash, PartialOrd, FromStr, PartialEq, Eq, Add)]
-pub struct TapeEntry(pub i32);
+#[derive(Debug, Hash, PartialOrd, FromStr, PartialEq, Eq, Add, Clone)]
+pub struct TapeEntry(pub Number);
 impl TapeEntry {
     pub const blank: TapeEntry = TapeEntry(0);
 }

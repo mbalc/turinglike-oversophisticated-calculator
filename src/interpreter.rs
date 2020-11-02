@@ -40,9 +40,12 @@ fn parse_cmd_arguments() -> AppResult<Arguments> {
 
 fn main() -> Result<(), AppError> {
     let args = parse_cmd_arguments()?;
-    let stdin = "alamakota".to_string();
+    let mut stdin = String::new();
+    std::io::stdin().read_line(&mut stdin)?;
 
-    let machine = ClassicMachine::new(args.input_file, args.execution_limit, stdin)?;
+    let tape_content = stdin.trim().to_string();
+
+    let machine = ClassicMachine::new(args.input_file, args.execution_limit, tape_content)?;
     dbg!(&machine);
 
     machine.run_with_limit();
