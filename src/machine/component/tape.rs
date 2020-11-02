@@ -8,7 +8,7 @@ pub struct Tape {
 
 impl Tape {
     pub fn new(initial_content: String) -> Tape {
-        //dbg!(&initial_content);
+        // dbg!(&initial_content);
         let mut initial_tape_entries: Vec<TapeEntry> = initial_content
             .chars()
             .map(|ch| {

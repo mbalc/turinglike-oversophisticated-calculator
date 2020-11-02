@@ -14,9 +14,9 @@ pub mod std_states {
     pub const START: &str = "start";
     pub const ACCEPT: &str = "accept";
 
-    /* REJECT unused because if we got a valid machine,
-    this state wouldn't be used as
-    a prerequisite transition state anyway */
+    /* REJECT unused because if we got a valid machine, this state wouldn't be used as
+    a prerequisite transition state anyway - so here I'm actually allowing
+    transitions >from< `reject` state */
     // pub const REJECT: &str = "reject";
 }
 
