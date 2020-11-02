@@ -67,9 +67,9 @@ pub enum HeadMoveDirection {
 
 pub fn direction_to_string(direction: &HeadMoveDirection) -> String {
     match direction {
-        Left => "L".to_string(),
-        Right => "R".to_string(),
-        Stay => "S".to_string(),
+        HeadMoveDirection::Left => "L".to_string(),
+        HeadMoveDirection::Right => "R".to_string(),
+        HeadMoveDirection::Stay => "S".to_string(),
     }
 }
 

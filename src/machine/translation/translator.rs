@@ -34,7 +34,9 @@ impl TranslatorInput {
             .flatten()
             .collect();
 
-        let digits: Vec<TapeEntry> = (0..9).map(|d| TapeEntry(d)).collect();
+        // let digits: Vec<TapeEntry> = (0..9).map(|d| TapeEntry(d)).collect();
+        // program_tape_entries.extend(digits);
+        let digits: Vec<TapeEntry> = (0..1).map(|d| TapeEntry(d)).collect();
         program_tape_entries.extend(digits);
 
         Ok(Self {
@@ -91,15 +93,21 @@ impl MachineTranslator {
             .map(|e| SuperTapeEntry {
                 first_letter: e.clone(),
                 second_letter: TapeEntry::BLANK,
-                has_first_tape_head: true,
-                has_second_tape_head: true,
-                is_start: true,
+                has_first_tape_head: false,
+                has_second_tape_head: false,
+                is_start: false,
             })
             .map(|se| Transition {
-                state_before: Self::customized_state(std_states::START, vec![]),
+                state_before: State(std_states::START.to_string()),
                 state_after: Self::wrap_original_state(&State(std_states::START.to_string())),
                 tape_value_before: se.encoded(),
-                tape_value_after: se.encoded(),
+                tape_value_after: SuperTapeEntry {
+                    has_first_tape_head: true,
+                    has_second_tape_head: true,
+                    is_start: true,
+                    ..se.clone()
+                }
+                .encoded(),
                 tape_head_move_direction: HeadMoveDirection::Stay,
             })
             .collect()
@@ -128,7 +136,7 @@ impl MachineTranslator {
             .map(|se| Transition {
                 state_before: Self::wrap_original_state(&trans.state_before),
                 state_after: Self::customized_state(
-                    "go_to_start_to_read_q",
+                    "go_to_start_to_read_from_q",
                     Self::get_data_to_read_and_write(trans),
                 ),
                 tape_value_before: se.encoded(),
@@ -276,7 +284,7 @@ impl MachineTranslator {
             .iter()
             .map(|se| Transition {
                 state_before: Self::customized_state(
-                    "reach_q_for_read",
+                    "reach_p_for_write",
                     Self::get_data_to_write(trans),
                 ),
                 state_after: if se.has_first_tape_head {
@@ -298,7 +306,6 @@ impl MachineTranslator {
     fn write_value_to_p(&self, trans: &DoubleTransition) -> Vec<Transition> {
         self.possible_superentries
             .iter()
-            .filter(|se| se.second_letter == trans.second_tape_value_before)
             .map(|se| Transition {
                 state_before: Self::customized_state(
                     "write_value_to_p",
@@ -340,8 +347,20 @@ impl MachineTranslator {
             .collect()
     }
 
+    fn teardown_accepting_transitions(&self) -> Vec<Transition> {
+        self.possible_superentries
+            .iter()
+            .map(|se| Transition {
+                state_before: Self::wrap_original_state(&State(std_states::ACCEPT.to_string())),
+                state_after: State(std_states::ACCEPT.to_string()),
+                tape_value_before: se.encoded(),
+                tape_value_after: se.encoded(),
+                tape_head_move_direction: HeadMoveDirection::Stay,
+            })
+            .collect()
+    }
+
     pub fn translate(&self) -> String {
-        let start_transitions = self.initial_start_setup_transitions();
         let new_transitions: Vec<Transition> = self
             .input
             .transitions
@@ -364,8 +383,9 @@ impl MachineTranslator {
             .collect();
 
         let mut all_transitions: Vec<Transition> = vec![];
-        all_transitions.extend(start_transitions);
         all_transitions.extend(new_transitions);
+        all_transitions.extend(self.initial_start_setup_transitions());
+        all_transitions.extend(self.teardown_accepting_transitions());
         let all_transition_descriptions: Vec<String> = all_transitions
             .iter()
             .map(|trans| trans.to_string())

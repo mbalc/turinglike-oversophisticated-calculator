@@ -5,6 +5,7 @@ extern crate derive_more;
 mod machine;
 mod types;
 
+use intbits::Bits;
 use types::*;
 
 fn print_usage_message() {

@@ -100,7 +100,7 @@ impl ClassicMachine {
             self.run = self.run.apply_transitions(&self.transitions);
             // dbg!(self.run.current_step_no);
             // dbg!(self.run.visited_configs.len());
-            // dbg!(self.run.current_configs.len());
+            dbg!(self.run.current_configs.len());
             // dbg!(&self.run.current_configs);
         }
         if self.run.is_accepting_run_reached() {

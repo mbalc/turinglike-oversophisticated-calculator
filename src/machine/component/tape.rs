@@ -47,7 +47,9 @@ impl Tape {
         if self.head_idx == self.content.len() - 1 {
             self.trim_single_trailing_blank();
         }
-        self.head_idx = std::cmp::max(self.head_idx - 1, 0) // prevent fall off of the tape
+        if self.head_idx > 0 {
+            self.head_idx = self.head_idx - 1 // prevent fall off of the tape
+        }
     }
 
     fn move_right(&mut self) {
