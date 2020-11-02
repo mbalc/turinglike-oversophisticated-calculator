@@ -16,7 +16,9 @@ struct Arguments {
 fn print_usage_message() {
     println!(
         "Usage: {} [input_file] [execution_limit]",
-        std::env::args().next().unwrap_or("ala".to_string())
+        std::env::args()
+            .nth(0)
+            .unwrap_or("./interpreter".to_string())
     )
 }
 

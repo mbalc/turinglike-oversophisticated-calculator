@@ -16,7 +16,7 @@ impl Run {
         for trans in transitions.iter() {
             for cfg in self.current_configs.iter() {
                 if trans.applicable_to(cfg) {
-                    new_configs.insert(cfg.apply(trans));
+                    new_configs.insert(cfg.get_config_from_after_transition(trans));
                 }
             }
         } // TODO drop new_configs that have already been visited earlier
@@ -29,6 +29,7 @@ impl Run {
         }
     }
     pub fn is_accepting_run_reached(&self) -> bool {
+        // TODO just check current_configs instead to avoid multichecks on same configs
         self.visited_configs
             .iter()
             .find(|cfg| cfg.state.value() == StdStates::accept)
@@ -41,9 +42,17 @@ pub struct Config {
     pub state: State,
 }
 impl Config {
-    pub fn apply(&self, trans: &Transition) -> Config {
-        // TODO
-        self.clone()
+    pub fn get_config_from_after_transition(&self, trans: &Transition) -> Config {
+        assert!(self.state == trans.state_before);
+        assert!(self.tape.read_from_head() == &trans.tape_value_before);
+        self.clone().apply(trans)
+    }
+
+    fn apply(mut self, trans: &Transition) -> Config {
+        self.state = trans.state_after.clone();
+        self.tape.write_to_head(&trans.tape_value_after);
+        self.tape.move_head(&trans.tape_head_move_direction);
+        self
     }
 }
 
@@ -84,13 +93,19 @@ impl ClassicMachine {
     }
 
     pub fn run_with_limit(mut self) -> () {
-        while !self.time_limit_reached() && !self.run.is_accepting_run_reached() {
+        while !self.time_limit_reached()
+            && !self.run.is_accepting_run_reached()
+            && self.run.current_configs.len() > 0
+        {
             self.run = self.run.apply_transitions(&self.transitions);
+            dbg!(self.run.current_step_no);
+            dbg!(self.run.visited_configs.len());
+            dbg!(self.run.current_configs.len());
         }
         if self.run.is_accepting_run_reached() {
-            println!("OK")
+            println!("YES")
         } else {
-            println!("FAIL")
+            println!("NO")
         }
     }
 }

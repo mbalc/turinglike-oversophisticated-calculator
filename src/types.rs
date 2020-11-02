@@ -23,7 +23,7 @@ impl TapeEntry {
 }
 
 #[derive(Debug)]
-pub enum TapeHeadMove {
+pub enum HeadMoveDirection {
     Left,
     Right,
     Stay,
