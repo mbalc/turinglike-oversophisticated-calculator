@@ -32,7 +32,7 @@ impl Run {
         // TODO just check current_configs instead to avoid multichecks on same configs
         self.visited_configs
             .iter()
-            .find(|cfg| cfg.state.value() == StdStates::accept)
+            .find(|cfg| cfg.state.value() == std_states::ACCEPT)
             .is_some()
     }
 }
@@ -72,7 +72,7 @@ impl ClassicMachine {
         let mut step_configs = HashSet::new();
         step_configs.insert(Config {
             tape: Tape::new(input_word),
-            state: State(StdStates::start.to_string()),
+            state: State(std_states::START.to_string()),
         });
 
         let initial_run_data = Run {

@@ -32,7 +32,7 @@ impl Tape {
     }
 
     fn move_left(&mut self) {
-        if self.content[self.head_idx] == TapeEntry::blank {
+        if self.content[self.head_idx] == TapeEntry::BLANK {
             self.content.pop();
         }
         self.head_idx = std::cmp::max(self.head_idx - 1, 0)
@@ -42,7 +42,7 @@ impl Tape {
         self.head_idx += 1;
         assert!(self.head_idx <= self.content.len());
         if self.head_idx == self.content.len() {
-            self.content.push(TapeEntry::blank);
+            self.content.push(TapeEntry::BLANK);
         }
     }
 

@@ -10,16 +10,20 @@ impl State {
     }
 }
 
-pub mod StdStates {
-    pub const start: &str = "start";
-    pub const accept: &str = "accept";
-    pub const reject: &str = "reject";
+pub mod std_states {
+    pub const START: &str = "start";
+    pub const ACCEPT: &str = "accept";
+
+    /* REJECT unused because if we got a valid machine,
+    this state wouldn't be used as
+    a prerequisite transition state anyway */
+    // pub const REJECT: &str = "reject";
 }
 
 #[derive(Debug, Hash, PartialOrd, FromStr, PartialEq, Eq, Add, Clone)]
 pub struct TapeEntry(pub Number);
 impl TapeEntry {
-    pub const blank: TapeEntry = TapeEntry(0);
+    pub const BLANK: TapeEntry = TapeEntry(0);
 }
 
 #[derive(Debug)]
