@@ -1,10 +1,7 @@
 use crate::machine::component::transition::Transition;
 use crate::types::*;
 
-pub fn transitions_from_file(file_path: String) -> AppResult<Vec<Transition>> {
-    let machine_description = std::fs::read_to_string(file_path)?;
-    // dbg!("loaded description:\n{}", &machine_description);
-
+pub fn transitions_from_description(machine_description: String) -> AppResult<Vec<Transition>> {
     let transition_descriptions: Vec<String> = machine_description
         .split("\n")
         .map(|x| x.to_string())

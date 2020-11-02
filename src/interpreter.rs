@@ -9,13 +9,13 @@ use machine::classic::ClassicMachine;
 use types::*;
 
 struct Arguments {
-    input_file: String,
+    machine_description: String,
     execution_limit: Number,
 }
 
 fn print_usage_message() {
     println!(
-        "Usage: {} [input_file] [execution_limit]",
+        "Usage: {} [machine_description_file] [execution_limit]",
         std::env::args()
             .nth(0)
             .unwrap_or("./interpreter".to_string())
@@ -34,8 +34,10 @@ fn parse_cmd_arguments() -> AppResult<Arguments> {
         std::process::exit(1);
     }
 
+    let machine_description = std::fs::read_to_string(&cmd_args[1])?;
+
     Ok(Arguments {
-        input_file: cmd_args[1].clone(),
+        machine_description: machine_description,
         execution_limit: cmd_args[2].parse::<Number>()?,
     })
 }
@@ -47,8 +49,8 @@ fn main() -> Result<(), AppError> {
 
     let tape_content = stdin.trim().to_string();
 
-    let machine = ClassicMachine::new(args.input_file, args.execution_limit, tape_content)?;
-    // dbg!(&machine);
+    let machine =
+        ClassicMachine::new(args.machine_description, args.execution_limit, tape_content)?;
 
     machine.run_with_limit();
 

@@ -19,7 +19,7 @@ impl Run {
                     new_configs.insert(cfg.get_config_from_after_transition(trans));
                 }
             }
-        } // TODO drop new_configs that have already been visited earlier
+        } // TODO OPTIMIZATION drop new_configs that have already been visited earlier
 
         self.visited_configs.extend(new_configs.iter().cloned());
         Run {
@@ -29,7 +29,7 @@ impl Run {
         }
     }
     pub fn is_accepting_run_reached(&self) -> bool {
-        // TODO just check current_configs instead to avoid multichecks on same configs
+        // TODO OPTIMIZATION just check current_configs instead to avoid multichecks on same configs
         self.visited_configs
             .iter()
             .find(|cfg| cfg.state.value() == std_states::ACCEPT)
@@ -65,7 +65,7 @@ pub struct ClassicMachine {
 
 impl ClassicMachine {
     pub fn new(
-        file_path: String,
+        machine_description: String,
         execution_limit: Number,
         input_word: String,
     ) -> AppResult<ClassicMachine> {
@@ -83,7 +83,7 @@ impl ClassicMachine {
 
         Ok(ClassicMachine {
             run: initial_run_data,
-            transitions: loader::transitions_from_file(file_path)?,
+            transitions: loader::transitions_from_description(machine_description)?,
             execution_limit,
         })
     }
@@ -98,10 +98,10 @@ impl ClassicMachine {
             && self.run.current_configs.len() > 0
         {
             self.run = self.run.apply_transitions(&self.transitions);
-            dbg!(self.run.current_step_no);
-            dbg!(self.run.visited_configs.len());
+            // dbg!(self.run.current_step_no);
+            // dbg!(self.run.visited_configs.len());
             // dbg!(self.run.current_configs.len());
-            dbg!(&self.run.current_configs);
+            // dbg!(&self.run.current_configs);
         }
         if self.run.is_accepting_run_reached() {
             println!("YES")

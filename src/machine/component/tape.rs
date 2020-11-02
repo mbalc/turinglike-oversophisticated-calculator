@@ -9,13 +9,18 @@ pub struct Tape {
 impl Tape {
     pub fn new(initial_content: String) -> Tape {
         //dbg!(&initial_content);
-        let initial_tape_entries: Vec<TapeEntry> = initial_content
+        let mut initial_tape_entries: Vec<TapeEntry> = initial_content
             .chars()
             .map(|ch| {
                 let digit = ch.to_digit(10).unwrap(); // TODO catch panic
                 TapeEntry(digit as i32)
             })
             .collect();
+
+        if initial_tape_entries.is_empty() {
+            // prevent error when accessing tape with empty machine input
+            initial_tape_entries.push(TapeEntry::BLANK);
+        }
 
         Tape {
             content: initial_tape_entries,
@@ -31,11 +36,18 @@ impl Tape {
         &self.content[self.head_idx]
     }
 
-    fn move_left(&mut self) {
-        if self.content[self.head_idx] == TapeEntry::BLANK {
+    fn trim_single_trailing_blank(&mut self) {
+        // leave at least one entry on the tape
+        if self.content.len() > 1 && self.content.last().unwrap() == &TapeEntry::BLANK {
             self.content.pop();
         }
-        self.head_idx = std::cmp::max(self.head_idx - 1, 0)
+    }
+
+    fn move_left(&mut self) {
+        if self.head_idx == self.content.len() - 1 {
+            self.trim_single_trailing_blank();
+        }
+        self.head_idx = std::cmp::max(self.head_idx - 1, 0) // prevent fall off of the tape
     }
 
     fn move_right(&mut self) {
