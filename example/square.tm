@@ -1,0 +1,63 @@
+start 0 accept 0 S
+start 1 findSomeOtherWordBeginningWith1 7 R
+start 2 findSomeOtherrWordBeginningWith2 7 R
+
+
+findSomeOtherWordBeginningWith1 0 weWentTooFar 42 S
+findSomeOtherWordBeginningWith1 1 goBackToNextLetterOfFirstWord 8 L
+findSomeOtherWordBeginningWith1 1 findSomeOtherWordBeginningWith1 1 R
+findSomeOtherWordBeginningWith1 2 findSomeOtherWordBeginningWith1 2 R
+
+findSomeOtherWordBeginningWith2 0 weWentTooFar 42 S
+findSomeOtherWordBeginningWith2 1 findSomeOtherWordBeginningWith2 1 R
+findSomeOtherWordBeginningWith2 2 goBackToNextLetterOfFirstWord 8 L
+findSomeOtherWordBeginningWith2 2 findSomeOtherWordBeginningWith2 2 R
+
+
+goBackToNextLetterOfFirstWord 0 impossible 42 S
+goBackToNextLetterOfFirstWord 1 goBackToNextLetterOfFirstWord 1 L
+goBackToNextLetterOfFirstWord 2 goBackToNextLetterOfFirstWord 2 L
+goBackToNextLetterOfFirstWord 7 checkNextLetterOfFirstWord 7 R
+goBackToNextLetterOfFirstWord 8 goBackToNextLetterOfFirstWord 8 L
+
+checkNextLetterOfFirstWord 0 impossible 42 S
+checkNextLetterOfFirstWord 1 goToSecondWordWithMemoEq1 7 R
+checkNextLetterOfFirstWord 2 goToSecondWordWithMemoEq2 7 R
+checkNextLetterOfFirstWord 7 impossible 42 S
+checkNextLetterOfFirstWord 8 weMatchedBothWordsSoCheckIfWeExhaustedAllInput 8 S
+
+goToSecondWordWithMemoEq1 0 impossible 42 S
+goToSecondWordWithMemoEq2 0 impossible 42 S
+goToSecondWordWithMemoEq1 1 goToSecondWordWithMemoEq1 1 R
+goToSecondWordWithMemoEq2 1 goToSecondWordWithMemoEq2 1 R
+goToSecondWordWithMemoEq1 2 goToSecondWordWithMemoEq1 2 R
+goToSecondWordWithMemoEq2 2 goToSecondWordWithMemoEq2 2 R
+goToSecondWordWithMemoEq1 7 impossible 42 S
+goToSecondWordWithMemoEq2 7 impossible 42 S
+goToSecondWordWithMemoEq1 8 checkIfNextLetterOfSecondWordEquals1 8 S
+goToSecondWordWithMemoEq2 8 checkIfNextLetterOfSecondWordEquals2 8 S
+
+
+checkIfNextLetterOfSecondWordEquals1 0 secondWordShorterThanFirst 42 S
+checkIfNextLetterOfSecondWordEquals2 0 secondWordShorterThanFirst 42 S
+checkIfNextLetterOfSecondWordEquals1 1 goBackToNextLetterOfFirstWord 8 S
+checkIfNextLetterOfSecondWordEquals2 1 reject 42 S
+checkIfNextLetterOfSecondWordEquals1 2 reject 42 S
+checkIfNextLetterOfSecondWordEquals2 2 goBackToNextLetterOfFirstWord 8 S
+checkIfNextLetterOfSecondWordEquals1 7 impossible 42 S
+checkIfNextLetterOfSecondWordEquals2 7 impossible 42 S
+checkIfNextLetterOfSecondWordEquals1 8 checkIfNextLetterOfSecondWordEquals1 8 R
+checkIfNextLetterOfSecondWordEquals2 8 checkIfNextLetterOfSecondWordEquals2 8 R
+
+weMatchedBothWordsSoCheckIfWeExhaustedAllInput 8 gotoEndOfSecondWord 8 R
+
+gotoEndOfSecondWord 0 accept 0 S
+gotoEndOfSecondWord 1 secondWordLongerThanFirst 42 S
+gotoEndOfSecondWord 2 secondWordLongerThanFirst 42 S
+gotoEndOfSecondWord 7 impossible 42 S
+gotoEndOfSecondWord 8 gotoEndOfSecondWord 8 R
+
+weWentTooFar 42 reject 42 S
+impossible 42 wtf 42 S
+secondWordShorterThanFirst 42 reject 42 S
+secondWordLongerThanFirst 42 reject 42 S

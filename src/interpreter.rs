@@ -48,7 +48,7 @@ fn main() -> Result<(), AppError> {
     let tape_content = stdin.trim().to_string();
 
     let machine = ClassicMachine::new(args.input_file, args.execution_limit, tape_content)?;
-    dbg!(&machine);
+    // dbg!(&machine);
 
     machine.run_with_limit();
 
