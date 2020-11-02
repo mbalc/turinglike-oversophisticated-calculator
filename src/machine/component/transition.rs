@@ -10,7 +10,7 @@ pub struct Transition {
     pub tape_head_move_direction: HeadMoveDirection,
 }
 
-fn tape_head_move_from_char(symbol: char) -> AppResult<HeadMoveDirection> {
+pub fn tape_head_move_from_char(symbol: char) -> AppResult<HeadMoveDirection> {
     match symbol {
         'L' => Ok(HeadMoveDirection::Left),
         'R' => Ok(HeadMoveDirection::Right),
@@ -20,7 +20,7 @@ fn tape_head_move_from_char(symbol: char) -> AppResult<HeadMoveDirection> {
 }
 
 impl Transition {
-    pub fn from_description(description: &str) -> AppResult<Transition> {
+    pub fn from_description(description: &str) -> AppResult<Self> {
         let (state1, val1, state2, val2, dir) = scan_fmt!(
             description,
             "{} {} {} {} {}",
@@ -31,15 +31,24 @@ impl Transition {
             char
         )?;
 
-        let head_move_direction = tape_head_move_from_char(dir)?;
-
-        Ok(Transition {
+        Ok(Self {
             state_before: State(state1),
             state_after: State(state2),
             tape_value_before: TapeEntry(val1),
             tape_value_after: TapeEntry(val2),
-            tape_head_move_direction: head_move_direction,
+            tape_head_move_direction: tape_head_move_from_char(dir)?,
         })
+    }
+
+    pub fn to_string(&self) -> String {
+        format!(
+            "{} {} {} {} {}",
+            self.state_before.to_string(),
+            self.tape_value_before.to_string(),
+            self.state_after.to_string(),
+            self.tape_value_after.to_string(),
+            direction_to_string(&self.tape_head_move_direction),
+        )
     }
 
     pub fn applicable_to(&self, cfg: &Config) -> bool {

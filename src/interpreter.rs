@@ -5,8 +5,8 @@ extern crate derive_more;
 mod machine;
 mod types;
 
+use crate::types::*;
 use machine::classic::ClassicMachine;
-use types::*;
 
 struct Arguments {
     machine_description: String,
@@ -34,10 +34,8 @@ fn parse_cmd_arguments() -> AppResult<Arguments> {
         std::process::exit(1);
     }
 
-    let machine_description = std::fs::read_to_string(&cmd_args[1])?;
-
     Ok(Arguments {
-        machine_description: machine_description,
+        machine_description: std::fs::read_to_string(&cmd_args[1])?,
         execution_limit: cmd_args[2].parse::<Number>()?,
     })
 }

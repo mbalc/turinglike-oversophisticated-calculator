@@ -27,6 +27,7 @@ an accepting run on this word of length of at most `<steps>`.
 
 The machine’s description is given as a list of its transitions.
 Each transition is written in a separate line in the following format: (also see `example` folder)
+
 ```<current_state> <currently_seen_letter> <target_state> <letter_to_write> <direction>```
 
 The machine accepts its input by entering the `accept` state.

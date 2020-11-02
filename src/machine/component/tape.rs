@@ -12,8 +12,8 @@ impl Tape {
         let mut initial_tape_entries: Vec<TapeEntry> = initial_content
             .chars()
             .map(|ch| {
-                let digit = ch.to_digit(10).unwrap(); // TODO catch panic
-                TapeEntry(digit as i32)
+                let digit: u64 = ch.to_digit(10).unwrap().into(); // TODO catch panic
+                TapeEntry(digit)
             })
             .collect();
 
